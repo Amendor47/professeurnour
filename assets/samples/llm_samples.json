@@ -1,0 +1,43 @@
+{
+  "mcq": {
+    "status": "ok",
+    "items": [
+      {"id":"q1","difficulty":"easy","bloom":"rappel","question":"Quelle est la relation correcte entre force, masse et accélération ?","options":["F = m × a","F = m / a","F = a / m","F = m + a"],"answer_index":0,"rationale":"Deuxième loi de Newton.","distractors_rationale":"Confusions d'opération ou d'unités.","citations":["p1"]},
+      {"id":"q2","difficulty":"medium","bloom":"compréhension","question":"Quel énoncé décrit le principe d'inertie ?","options":["Un corps persiste en son état sans force externe","La force est proportionnelle à la vitesse","Toute action n'a pas de réaction","La masse est constante quelle que soit la force"],"answer_index":0,"rationale":"Première loi de Newton.","distractors_rationale":"Confusion avec autres lois.","citations":["p2"]},
+      {"id":"q3","difficulty":"medium","bloom":"application","question":"Un objet de 2 kg subit une force de 10 N. Quelle est son accélération ?","options":["5 m/s²","20 m/s²","0.2 m/s²","10 m/s²"],"answer_index":0,"rationale":"a=F/m=10/2.","distractors_rationale":"Erreurs de division.","citations":["p3"]},
+      {"id":"q4","difficulty":"hard","bloom":"analyse","question":"Dans un système isolé, que dit le principe action-réaction ?","options":["Les forces apparaissent par paires opposées","La somme des vitesses est constante","La force nette est toujours nulle","La masse augmente avec l'accélération"],"answer_index":0,"rationale":"Troisième loi.","distractors_rationale":"Confusion conservation/vitesse.","citations":["p4"]},
+      {"id":"q5","difficulty":"easy","bloom":"rappel","question":"Quelle grandeur se mesure en newton (N) ?","options":["La force","La masse","La vitesse","L'énergie"],"answer_index":0,"rationale":"Unité SI de la force.","distractors_rationale":"Unités d'autres grandeurs.","citations":["p5"]},
+      {"id":"q6","difficulty":"medium","bloom":"compréhension","question":"Pourquoi une ceinture de sécurité est-elle utile selon l'inertie ?","options":["Elle limite le mouvement lors d'un freinage","Elle augmente la masse du passager","Elle réduit la force de gravité","Elle supprime l'accélération"],"answer_index":0,"rationale":"Elle retient le corps en mouvement.","distractors_rationale":"Mauvaises causalités.","citations":["p6"]},
+      {"id":"q7","difficulty":"medium","bloom":"application","question":"Un bloc glisse sans frottement. Quelle est sa force nette ?","options":["0 N","Égal à sa masse","Égale à sa vitesse","Égal à sa hauteur"],"answer_index":0,"rationale":"Sans forces, F_net=0.","distractors_rationale":"Confusions dimensionnelles.","citations":["p7"]},
+      {"id":"q8","difficulty":"hard","bloom":"analyse","question":"Deux patineurs se repoussent. Que peut-on dire des forces ?","options":["Elles sont égales en intensité et opposées","Elles sont égales à zéro","La plus lourde exerce une force plus grande","Elles sont parallèles et identiques"],"answer_index":0,"rationale":"Action-réaction.","distractors_rationale":"Intuition poids/force.","citations":["p8"]},
+      {"id":"q9","difficulty":"easy","bloom":"rappel","question":"Quelle est l'unité SI de la masse ?","options":["kilogramme (kg)","newton (N)","joule (J)","mètre (m)"],"answer_index":0,"rationale":"Définition.","distractors_rationale":"Unités d'autres grandeurs.","citations":["p9"]},
+      {"id":"q10","difficulty":"medium","bloom":"application","question":"Une voiture (1000 kg) accélère de 0 à 10 m/s². Force moteur approximative ?","options":["10 kN","100 N","1 kN","100 kN"],"answer_index":0,"rationale":"F=ma=1000×10.","distractors_rationale":"Ordres de grandeur confondus.","citations":["p10"]}
+    ]
+  },
+  "sheets": {
+    "status": "ok",
+    "sheets": [
+      {
+        "title": "Lois de Newton",
+        "short_version": {"type":"bullet_points","content":["Inertie","F = m × a","Action-réaction"]},
+        "medium_version": {"type":"paragraphs","content":["Les lois de Newton décrivent le mouvement. L'inertie maintient l'état sans force; la seconde loi relie force, masse et accélération."]},
+        "long_version": {"type":"developed","content":"Introduction. Les trois lois de Newton encadrent la dynamique classique. La première, le principe d'inertie, établit qu'un corps conserve son état de repos ou de mouvement rectiligne uniforme en l'absence de force nette. La deuxième formule F = m × a relie la force appliquée à l'accélération résultante via la masse. La troisième loi précise que toute action entraîne une réaction opposée de même intensité. Exemples: freinage en voiture (inertie), poussée d'une fusée (action-réaction)."},
+        "citations": ["p1","p2"]
+      },
+      {
+        "title": "Énergie cinétique",
+        "short_version": {"type":"bullet_points","content":["Ec = 1/2 m v²","Dépend de m et v","Toujours ≥ 0"]},
+        "medium_version": {"type":"paragraphs","content":["L'énergie cinétique mesure l'énergie du mouvement. Elle croît avec la masse et surtout avec le carré de la vitesse."]},
+        "long_version": {"type":"developed","content":"Définition. L'énergie cinétique d'un corps de masse m animé d'une vitesse v vaut Ec = 1/2 m v². Cette quantité est toujours positive et s'additionne pour les systèmes. Applications: travail des forces, freinage, sécurité routière. Exemples chiffrés illustrant l'effet du carré de la vitesse."},
+        "citations": ["p3"]
+      },
+      {
+        "title": "Quantité de mouvement",
+        "short_version": {"type":"bullet_points","content":["p = m × v","Conservation","Chocs"]},
+        "medium_version": {"type":"paragraphs","content":["La quantité de mouvement p = m × v se conserve dans un système isolé. Utile pour analyser les collisions." ]},
+        "long_version": {"type":"developed","content":"Notions. La conservation de la quantité de mouvement découle de l'absence de force externe. Dans les chocs élastiques, l'énergie cinétique se conserve également; dans les chocs inélastiques, elle se dissipe. Méthode: bilans vectoriels avant/après, exemples chiffrés."},
+        "citations": ["p4","p5"]
+      }
+    ]
+  }
+}
