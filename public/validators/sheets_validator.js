@@ -1,4 +1,4 @@
-export function validateSheetsPayload(payload){
+function validateSheetsPayload(payload){
   const errors = [];
   if (payload?.status !== 'ok') errors.push('status != ok');
   const sheets = payload?.sheets || [];
