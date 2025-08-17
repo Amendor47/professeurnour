@@ -1,0 +1,120 @@
+/*
+ StudyCave Theme (scoped): apply by setting <html class="theme-3d theme-dark theme-studycave">.
+ Encapsulated to .theme-studycave so it won’t affect other themes.
+ Safe, append-only overrides of structure + component polish.
+*/
+
+.theme-studycave {
+  /* Palette */
+  --sc-ink: #0a121a;           /* deep slate */
+  --sc-bg-grad: radial-gradient(1200px 800px at 60% 40%, #0d1826 0%, #0a121a 60%, #070e15 100%);
+  --sc-primary: #00c2a8;       /* teal */
+  --sc-primary-600: #00a893;
+  --sc-accent: #8b5cf6;        /* purple accent */
+  --sc-orange: #ff9f1c;        /* mascot accent */
+  --sc-text: #e8f2ff;
+  --sc-muted: #a0b3c8;
+  --sc-border: #1f2d3a;
+
+  /* Surfaces */
+  --background-color: var(--sc-bg-grad);
+  --surface-color: rgba(10, 18, 26, .88);
+  --surface-2: rgba(12, 22, 32, .88);
+  --surface-3: rgba(10, 18, 26, .88);
+  --on-surface-color: var(--sc-text);
+  --border-color: var(--sc-border);
+
+  /* Buttons */
+  --primary-color: var(--sc-primary);
+  --primary-color-600: var(--sc-primary-600);
+  --on-primary-color: #0b1020;
+}
+
+/* Layout width + centering */
+.theme-studycave .container { width: min(97%, 1680px); }
+.theme-studycave .main-grid { display:grid; grid-template-columns:minmax(340px,520px) minmax(980px,1fr); gap:18px; }
+@media (max-width: 1100px){ .theme-studycave .main-grid{ grid-template-columns:1fr; } }
+.theme-studycave #output-card{ justify-self:stretch; width:100%; }
+.theme-studycave .tab-content, 
+.theme-studycave .tab-pane{ width:100% !important; max-width:100% !important; margin:0 auto; }
+.theme-studycave #output-card .tab-pane > .card,
+.theme-studycave #output-card .tab-pane > .tile{ width:100%; max-width:100%; margin-inline:auto; }
+
+/* Tabs as responsive pills */
+.theme-studycave #output-card .tabs{
+  position: sticky; top: 72px; z-index: 5;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px; background: transparent; border: 0; padding-top: 4px;
+}
+.theme-studycave #output-card .tab-link{
+  text-align:center; padding:.9rem 1rem; border-radius:14px;
+  border:1px solid var(--border-color);
+  background: var(--surface-2);
+  color: #d7f7ff; font-weight: 700; letter-spacing:.1px;
+  transition: transform .12s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.theme-studycave #output-card .tab-link:hover{
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, rgba(0,194,168,.18), rgba(0,194,168,.06));
+  color:#fff;
+}
+.theme-studycave #output-card .tab-link.active{
+  background: linear-gradient(180deg, rgba(0,194,168,.28), rgba(0,194,168,.10));
+  color:#fff; border-color:#1be3cd;
+  box-shadow: 0 8px 20px rgba(0,194,168,.18) inset, 0 6px 22px rgba(8,12,24,.35);
+}
+.theme-studycave #output-card .tab-link::after{ display:none !important; }
+.theme-studycave .tab-pane{ display:none; }
+.theme-studycave .tab-pane.active{ display:block; animation: scPaneIn .28s ease both; }
+@keyframes scPaneIn{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform:none; } }
+
+/* Surfaces, inputs, buttons */
+.theme-studycave .card, .theme-studycave .tile,
+.theme-studycave .chat-window, .theme-studycave .qcm-item, .theme-studycave .srs-item{
+  background: var(--surface-color) !important;
+  border:1px solid var(--border-color);
+  backdrop-filter: blur(10px) saturate(115%);
+  color: var(--on-surface-color);
+}
+.theme-studycave .input, 
+.theme-studycave select, 
+.theme-studycave textarea{
+  background: #0d1b26; color:#e5f3ff; border:1px solid #1b2a38;
+}
+.theme-studycave textarea::placeholder, 
+.theme-studycave input::placeholder{ color:#8fb0c6; }
+
+.theme-studycave .btn{ background:#0f2530; color:#d9fbff; border:1px solid #1b2a38; position:relative; overflow:hidden; }
+.theme-studycave .btn.primary{
+  background: linear-gradient(135deg, var(--sc-primary), #00e2c7);
+  border-color:#1be3cd; box-shadow:0 10px 24px rgba(0,226,199,.22);
+  color:#032026;
+}
+.theme-studycave .btn.cta{ background: linear-gradient(135deg, var(--sc-orange), #ffb545); color:#0b1020; border:none; }
+.theme-studycave .btn:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+.theme-studycave .btn:focus-visible{ outline:3px solid rgba(0,226,199,.45); outline-offset:2px; }
+
+/* Status pill readability */
+.theme-studycave #providerStatus{ background: rgba(0,226,199,.10); color:#8ff2e7; border:1px solid rgba(0,226,199,.35); }
+
+/* QCM options */
+.theme-studycave .qcm-options label{
+  background:#0d1b26; border:1px solid #1b2a38; color:#e5f3ff; display:block; border-radius:12px; padding:12px 14px; margin:.4rem 0; line-height:1.4;
+}
+.theme-studycave .qcm-options label:hover{ background: rgba(0,194,168,.12); border-color:#234150; }
+.theme-studycave .qcm-options label:has(input:checked){
+  background: linear-gradient(180deg, rgba(0,194,168,.30), rgba(0,194,168,.14));
+  border-color:#9af7ea; color:#031c1f; box-shadow: inset 0 0 0 1px #9af7ea55, 0 8px 26px rgba(0,194,168,.22);
+}
+.theme-studycave .qcm-options label.qq-correct{ background: rgba(34,197,94,.18); border-color:#22c55e; color:#eafff2; }
+.theme-studycave .qcm-options label.qq-wrong{ background: rgba(239,68,68,.18); border-color:#ef4444; color:#ffecec; }
+
+/* Chat bubbles & FAB */
+.theme-studycave .assistant-message{ background:#132532; color:#e5f3ff; }
+.theme-studycave .user-message{ background:#0d1b26; color:#e5f3ff; border:1px solid #1b2a38; }
+.theme-studycave .nour-fab{ background: var(--surface-color); border:1px solid var(--border-color); }
+.theme-studycave .nour-fab-avatar{ background:#132a3a; border-radius:50%; }
+
+/* Hide old toggle wide button */
+.theme-studycave #toggleWide{ display:none !important; }

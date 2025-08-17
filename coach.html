@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr" class="theme-3d theme-dark theme-nour">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professeur Nour</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-studycave.css">
+    <link rel="icon" href="prof-mascotte-3.png" sizes="512x512">
+</head>
+<body>
+    <!-- Header modernisé -->
+    <header class="app-header glass">
+        <div class="container header-row">
+            <div class="brand">
+                <img id="logo-drop" class="brand-avatar" src="prof-mascotte-2.png" alt="Portrait Professeur Nour" title="Glissez-déposez votre fichier ici" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 80 80&quot;><rect width=&quot;80&quot; height=&quot;80&quot; rx=&quot;20&quot; fill=&quot;%230B1020&quot;/><text x=&quot;50%&quot; y=&quot;58%&quot; text-anchor=&quot;middle&quot; font-size=&quot;42&quot; fill=&quot;%23fff&quot; font-family=&quot;system-ui, -apple-system, Segoe UI, Roboto, sans-serif&quot;>N</text></svg>'" />
+                <div class="brand-meta">
+                    <h1 class="brand-title">Professeur Nour</h1>
+                    <p class="brand-sub">Votre mentor d’étude, clair et bienveillant</p>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="sessionBtn" class="btn">Gérer la Session</button>
+                <button id="loadSamplesBtn" class="btn" title="Charger des exemples de QCM et fiches">Charger Exemples</button>
+                <select id="aiProvider" class="input" aria-label="Fournisseur IA">
+                    <option value="internal">IA Interne (Rapide)</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="firecrawl">Firecrawl (Local RAG)</option>
+                </select>
+                <input type="password" id="apiKey" class="input" placeholder="Clé API (si nécessaire)">
+                <button id="toggleWide" class="btn" title="Étendre/Réduire l’interface">↔️ Étendre</button>
+                <button id="openSettings" class="btn" title="Paramètres">⚙️</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Settings Pane (regroups provider, API key, samples, theme switch) -->
+        <section id="settings-pane" class="settings-pane hidden" aria-label="Paramètres">
+                        <header class="settings-header">
+                <strong>Paramètres</strong>
+                <button id="closeSettings" class="btn" title="Fermer">✕</button>
+            </header>
+                                                <div id="settings-body" class="settings-body">
+                                        <!-- controls will be moved here on load -->
+                                        <div class="settings-section" style="display:flex; align-items:center; gap:8px">
+                                            <label for="theme-select">Thème visuel :</label>
+                                            <select id="theme-select" class="input">
+                                                <option value="theme-nour">Thème Nour (par défaut)</option>
+                                                <option value="theme-studycave">Thème StudyCave</option>
+                                            </select>
+                                        </div>
+                                        <span id="providerStatus" class="badge" style="margin-left:auto"></span>
+                                    </div>
+        </section>
+        <div class="main-grid main-grid-centered">
+            <div class="card tile lightblue" id="input-card">
+                <h2>Cours à analyser</h2>
+                <div id="dropzone" class="dropzone">
+                    <p>Glissez-déposez un fichier (.txt, .md, .docx) ou cliquez pour sélectionner.</p>
+                </div>
+                <input type="file" id="fileInput" accept=".txt,.md,.doc,.docx,.pdf,.ppt,.pptx" style="display: none;">
+                <textarea id="textInput" placeholder="Ou collez votre texte ici..."></textarea>
+                <button id="processBtn" class="btn primary">Analyser le Cours</button>
+            </div>
+
+            <div class="card tile pink wide-output" id="output-card">
+                <div class="tabs" role="tablist" aria-label="Sections d'étude">
+                    <button id="tabbtn-analyse" class="tab-link active" role="tab" aria-selected="true" tabindex="0" aria-controls="analyse" data-tab="analyse">Analyse Sémantique</button>
+                    <button id="tabbtn-parcours" class="tab-link" role="tab" aria-selected="false" tabindex="-1" aria-controls="parcours" data-tab="parcours">Parcours guidé</button>
+                    <button id="tabbtn-fiche" class="tab-link" role="tab" aria-selected="false" tabindex="-1" aria-controls="fiche" data-tab="fiche">Fiche de Synthèse</button>
+                    <button id="tabbtn-qcm" class="tab-link" role="tab" aria-selected="false" tabindex="-1" aria-controls="qcm" data-tab="qcm">QCM Adaptatif</button>
+                    <button id="tabbtn-cards" class="tab-link" role="tab" aria-selected="false" tabindex="-1" aria-controls="flashcards-pane" data-tab="flashcards-pane">Cartes</button>
+                    <button id="tabbtn-revision" class="tab-link" role="tab" aria-selected="false" tabindex="-1" aria-controls="revision" data-tab="revision">Révision Prioritaire</button>
+                    <button id="tabbtn-chat" class="tab-link" role="tab" aria-selected="false" tabindex="-1" aria-controls="chat" data-tab="chat">Chat Interne</button>
+                    <button id="tabbtn-socratic" class="tab-link" role="tab" aria-selected="false" tabindex="-1" aria-controls="socratic" data-tab="socratic">Dialogue Socratique</button>
+                </div>
+                <div id="tab-content" class="tab-content centered-content">
+                                        <div id="analyse" class="tab-pane active" role="tabpanel" aria-labelledby="tabbtn-analyse" tabindex="0">
+                                                <div id="analysis-empty" class="empty-state">
+                                                    <img src="prof-mascotte-1.png" class="mascot-hero" alt="" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 120 120&quot;><rect width=&quot;120&quot; height=&quot;120&quot; rx=&quot;16&quot; fill=&quot;%23101736&quot;/><text x=&quot;50%&quot; y=&quot;56%&quot; text-anchor=&quot;middle&quot; font-size=&quot;24&quot; fill=&quot;%23e9eef9&quot; font-family=&quot;system-ui, -apple-system, Segoe UI, Roboto, sans-serif&quot;>Déposez un fichier</text></svg>'" />
+                                                    <div class="empty-copy">
+                                                        <h4>Bienvenue !</h4>
+                                                        <p>Que veux-tu travailler aujourd’hui ? Envoie-moi ton cours et avançons ensemble&nbsp;!</p>
+                                                    </div>
+                                                </div>
+                                                <h3>Analyse Sémantique du Document</h3>
+                        <div id="analysis-output"></div>
+                    </div>
+                                        <div id="parcours" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-parcours" tabindex="0">
+                                                <h3>Parcours guidé</h3>
+                                                <div id="flow-output">
+                                                        <!-- PARCOURS GUIDÉ : Lecture structurée + Planification + Pratique -->
+                                                        <section id="guided-reading" aria-label="Lecture guidée du cours" class="stack-md">
+                                                            <!-- Toolbar -->
+                                                            <div class="guided-toolbar">
+                                                                <button id="gr-generate" class="btn primary">✨ Générer le parcours</button>
+                                                                <button id="gr-start" class="btn">▶️ Commencer la lecture</button>
+                                                                <button id="gr-next" class="btn" disabled>Suivant</button>
+                                                                <button id="gr-prev" class="btn" disabled>Précédent</button>
+                                                                <button id="gr-export" class="btn">📄 Exporter la synthèse</button>
+                                                            </div>
+
+                                                            <!-- Planificateur d'horaires -->
+                                                            <fieldset class="schedule-controls">
+                                                                <legend>🗓️ Planifier mes créneaux</legend>
+                                                                <div class="time-grid">
+                                                                    <label>Durée d'une session (min)
+                                                                        <input type="number" id="gr-duration" class="input" min="15" step="5" value="30">
+                                                                    </label>
+                                                                    <label>Pause entre sessions (min)
+                                                                        <input type="number" id="gr-break" class="input" min="5" step="5" value="10">
+                                                                    </label>
+                                                                    <label>Sessions / jour
+                                                                        <input type="number" id="gr-sessions-per-day" class="input" min="1" max="6" value="2">
+                                                                    </label>
+                                                                    <label>Heure de début préférée
+                                                                        <input type="time" id="gr-start-time" class="input" value="09:00">
+                                                                    </label>
+                                                                    <label>Heure de fin préférée
+                                                                        <input type="time" id="gr-end-time" class="input" value="20:00">
+                                                                    </label>
+                                                                    <label>Jours (LU-MA-ME-JE-VE-SA-DI)
+                                                                        <input type="text" id="gr-days" class="input" value="LU,MA,ME,JE,VE">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="schedule-actions">
+                                                                    <button id="gr-optimize" class="btn">🧠 Optimiser</button>
+                                                                    <button id="gr-make-plan" class="btn">🗂️ Générer le planning</button>
+                                                                </div>
+                                                                <div id="gr-plan-view" class="plan"></div>
+                                                            </fieldset>
+
+                                                            <!-- Stepper + Progression -->
+                                                            <div class="reading-progress">
+                                                                <div id="gr-progressbar" class="paw-progress"><div class="bar" style="width:0%"></div></div>
+                                                                <div id="gr-stepper" class="stepper" aria-live="polite"></div>
+                                                            </div>
+
+                                                            <!-- Panneau de lecture -->
+                                                            <article id="gr-reading-pane" class="reading-pane card" aria-live="polite">
+                                                                <header class="reading-header">
+                                                                    <h4 id="gr-section-title">Section</h4>
+                                                                    <div class="view-toggle">
+                                                                        <button class="btn seg selected" data-view="short">Version courte</button>
+                                                                        <button class="btn seg" data-view="medium">Version moyenne</button>
+                                                                        <button class="btn seg" data-view="long">Version longue</button>
+                                                                    </div>
+                                                                </header>
+
+                                                                <section id="gr-content-short" class="summary"></section>
+                                                                <section id="gr-content-medium" class="summary hidden"></section>
+                                                                <section id="gr-content-long" class="summary hidden"></section>
+
+                                                                <section id="gr-quick-quiz" class="activity">
+                                                                    <h5>📝 Questions courtes</h5>
+                                                                    <div id="gr-qq-list" class="qcm-options"></div>
+                                                                    <div id="gr-qq-feedback" class="feedback hidden"></div>
+                                                                </section>
+
+                                                                <section id="gr-case" class="activity">
+                                                                    <h5>🧪 Cas pratique</h5>
+                                                                    <div id="gr-case-body"></div>
+                                                                </section>
+
+                                                                <footer class="reading-footer">
+                                                                    <button id="gr-mark-easy" class="btn">Facile</button>
+                                                                    <button id="gr-mark-ok" class="btn">Moyen</button>
+                                                                    <button id="gr-mark-hard" class="btn">Difficile</button>
+                                                                </footer>
+                                                            </article>
+                                                        </section>
+                                                </div>
+                                        </div>
+                    <div id="fiche" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-fiche" tabindex="0">
+                        <h3 class="gradient-text">Fiche de Synthèse Structurée</h3>
+                        <div id="sheet-output"></div>
+                    </div>
+                                        <div id="qcm" class="tab-pane card tile deepblue" style="border:none; box-shadow:none;" role="tabpanel" aria-labelledby="tabbtn-qcm" tabindex="0">
+                                                <aside id="qcm-tip" class="mascot-tip">
+                                                    <img src="prof-mascotte-4.png" class="mascot-side" alt="" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 96 96&quot;><rect width=&quot;96&quot; height=&quot;96&quot; rx=&quot;14&quot; fill=&quot;%230e1533&quot;/><text x=&quot;50%&quot; y=&quot;56%&quot; text-anchor=&quot;middle&quot; font-size=&quot;20&quot; fill=&quot;%23e9eef9&quot; font-family=&quot;system-ui, -apple-system, Segoe UI, Roboto, sans-serif&quot;>Astuce</text></svg>'" />
+                                                    <div>
+                                                        <strong>Astuce • Professeur Nour</strong>
+                                                        <p>Générez un QCM à partir du cours analysé. 4 propositions, 1 seule correcte, distracteurs plausibles.</p>
+                                                    </div>
+                                                </aside>
+                                                <h3>QCM Adaptatifs</h3>
+                        <div id="qcm-output"></div>
+                    </div>
+                    <!-- The Flashcards pane will be injected with id=flashcards-pane by script.js -->
+                    <div id="revision" class="tab-pane card tile orange" style="border:none; box-shadow:none;" role="tabpanel" aria-labelledby="tabbtn-revision" tabindex="0">
+                        <h3>Révision Prioritaire (SRS)</h3>
+                        <div id="srs-output"></div>
+                    </div>
+                    <div id="chat" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-chat" tabindex="0">
+                        <h3>Discuter avec <span class="gradient-text">Professeur Nour</span></h3>
+                        <div class="chat-window">
+                            <div id="chat-messages" class="chat-messages"></div>
+                            <div id="chat-suggestions" class="chat-suggestions" aria-label="Suggestions de questions" style="margin:8px 0; display:flex; flex-wrap:wrap; gap:6px"></div>
+                            <div class="chat-input-area">
+                                <input type="text" id="chat-input" placeholder="Posez une question au Professeur Nour...">
+                                <button id="chat-send" class="btn">Envoyer</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="socratic" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-socratic" tabindex="0">
+                        <h3>Dialogue Socratique (IA Externe)</h3>
+                        <div class="chat-window">
+                            <div id="socratic-messages" class="chat-messages"></div>
+                            <div id="socratic-suggestions" class="chat-suggestions" aria-label="Questions suggérées" style="margin:8px 0; display:flex; flex-wrap:wrap; gap:6px"></div>
+                            <div class="chat-input-area">
+                                <input type="text" id="socratic-input" placeholder="Explorez un concept en profondeur...">
+                                <button id="socratic-send" class="btn">Envoyer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal pour la gestion de session -->
+    <div id="sessionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Gestion des Sessions</h2>
+            <div class="session-controls">
+                <input type="text" id="sessionName" placeholder="Nom de la nouvelle session">
+                <button id="saveSessionBtn" class="btn">Sauvegarder</button>
+            </div>
+            <div id="sessionList"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+    <script src="public/validators/qcm_validator.js"></script>
+    <script src="public/validators/sheets_validator.js"></script>
+    
+        <!-- Chat Professeur Nour (floating) -->
+            <button id="nour-fab" class="nour-fab" aria-label="Ouvrir le chat avec Professeur Nour" aria-haspopup="dialog" aria-expanded="false">
+                <img src="prof-mascotte-3.png" alt="" class="nour-fab-avatar" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 80 80&quot;><rect width=&quot;80&quot; height=&quot;80&quot; rx=&quot;40&quot; fill=&quot;%23ff9f1c&quot;/><text x=&quot;50%&quot; y=&quot;58%&quot; text-anchor=&quot;middle&quot; font-size=&quot;34&quot; fill=&quot;%230B1020&quot; font-family=&quot;system-ui, -apple-system, Segoe UI, Roboto, sans-serif&quot;>PROF</text></svg>'" />
+            <span class="nour-fab-text">Professeur Nour</span>
+        </button>
+
+        <!-- Petit nudge en bas: avatar + bulle "Le professeur est là pour t'aider !" -->
+        <div id="nour-nudge" class="nour-nudge hidden" role="status" aria-live="polite">
+            <img src="assets/nour-waving.png" alt="" class="nudge-avatar" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 80 80&quot;><rect width=&quot;80&quot; height=&quot;80&quot; rx=&quot;20&quot; fill=&quot;%23253b80&quot;/><text x=&quot;50%&quot; y=&quot;58%&quot; text-anchor=&quot;middle&quot; font-size=&quot;28&quot; fill=&quot;%23fff&quot; font-family=&quot;system-ui, -apple-system, Segoe UI, Roboto, sans-serif&quot;>👋</text></svg>'"/>
+            <div class="nudge-bubble">Le professeur est là pour t'aider !</div>
+            <button class="nudge-close" title="Fermer" aria-label="Fermer">✕</button>
+        </div>
+
+        <div id="nour-chat" class="nour-chat hidden" role="dialog" aria-modal="false" aria-labelledby="nour-chat-title">
+            <header class="nour-chat-header">
+            <div class="nour-chat-id">
+                <img src="prof-mascotte-2.png" alt="" class="nour-chat-avatar" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 80 80&quot;><rect width=&quot;80&quot; height=&quot;80&quot; rx=&quot;20&quot; fill=&quot;%23253b80&quot;/><text x=&quot;50%&quot; y=&quot;58%&quot; text-anchor=&quot;middle&quot; font-size=&quot;40&quot; fill=&quot;%23fff&quot; font-family=&quot;system-ui, -apple-system, Segoe UI, Roboto, sans-serif&quot;>N</text></svg>'"/>
+                    <div>
+                        <h4 id="nour-chat-title">Professeur Nour</h4>
+                        <small>Disponible pour vous aider</small>
+                    </div>
+                </div>
+                <div class="nour-chat-actions">
+                    <button id="nour-min" class="btn" aria-label="Réduire">—</button>
+                    <button id="nour-close" class="btn" aria-label="Fermer">✕</button>
+                </div>
+            </header>
+            <div id="nour-chat-messages" class="chat-messages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="nour-chat-input" placeholder="Posez votre question…"/>
+                <button id="nour-chat-send" class="btn">Envoyer</button>
+            </div>
+        </div>
+
+        <script>
+            // Theme toggler: supports Nour et StudyCave (mode clair supprimé); default = Nour; syncs selects; manages theme-dark
+            (function(){
+                const html = document.documentElement;
+                const headerSel = document.getElementById('themeSelect');
+                const settingsSel = document.getElementById('theme-select');
+                const map = { nour:'theme-nour', studycave:'theme-studycave' };
+                const rev = { 'theme-nour':'nour', 'theme-studycave':'studycave' };
+                let savedClass = localStorage.getItem('selected-theme') || 'theme-nour';
+                if (savedClass === 'theme-light') savedClass = 'theme-nour';
+                function applyClass(themeClass){
+                    html.classList.remove('theme-nour','theme-light','theme-studycave');
+                    html.classList.add(themeClass);
+                    html.classList.add('theme-dark');
+                    localStorage.setItem('selected-theme', themeClass);
+                    if (headerSel) headerSel.value = rev[themeClass] || 'studycave';
+                    if (settingsSel) settingsSel.value = themeClass;
+                }
+                // initial
+                applyClass(savedClass);
+                function onHeaderChange(){ applyClass(map[headerSel.value] || 'theme-nour'); }
+                function onSettingsChange(){ applyClass(settingsSel.value || 'theme-nour'); }
+                headerSel?.addEventListener('change', onHeaderChange);
+                settingsSel?.addEventListener('change', onSettingsChange);
+            })();
+        </script>
+        <script src="script.js"></script>
+</body>
+</html>

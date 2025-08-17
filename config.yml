@@ -1,0 +1,28 @@
+llm: ctransformers
+ctransformers:
+  # Use a local GGUF path or a HF GGUF repo + model_file. Example local:
+  # model: /path/to/llama-2-7b.Q4_K_M.gguf
+  # Example repo:
+  # model: TheBloke/llama-2-7B-GGUF
+  # model_file: llama-2-7b.Q4_K_M.gguf
+  model: TheBloke/Wizard-Vicuna-7B-Uncensored-GGML
+  model_file: Wizard-Vicuna-7B-Uncensored.ggmlv3.q4_0.bin
+  model_type: llama
+  config:
+    gpu_layers: -1 # Utilise le maximum de couches GPU/Metal possible pour une accélération maximale
+huggingface:
+  model: TheBloke/Wizard-Vicuna-7B-Uncensored-HF
+  device: null   # 0 pour GPU
+embeddings:
+  model: sentence-transformers/all-MiniLM-L6-v2
+  model_kwargs:
+    device: cpu   # ou cuda
+vectorstore:
+  backend: faiss
+  path: db
+rag:
+  k: 4
+  chunk_size: 800
+  chunk_overlap: 120
+  rerank: false
+  # Note: Frontend supports multi-answer QCM when upstream provides multiple correct answers.
