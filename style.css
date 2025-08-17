@@ -20,7 +20,7 @@
 #logo-drop.dropover{ outline: 2px dashed #5c72ff; outline-offset: 4px; border-radius: 10px; }
 
 /* Fix oversized mascot on welcome screen */
-.mascot-hero { max-width: 120px; max-height: 120px; width: auto; height: auto; object-fit: contain; }
+.mascot-hero { max-width: 100px; max-height: 100px; width: auto; height: auto; object-fit: contain; }
 .empty-state { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px; }
 .empty-copy { text-align: center; max-width: 400px; }
 /* ===== HARD FIX – Sortir l'UI "bloquée à gauche" ===== */
@@ -817,15 +817,7 @@ textarea {
 
 /* Plus d’espace au centre si non présent */
 .container { max-width: 1600px; }
-body .container { width: min(97%, 1800px); margin-left: auto; margin-right: auto; }
-body .main-grid.main-grid-centered { grid-template-columns: minmax(380px, 600px) minmax(1040px, 1fr); }
-@media (min-width: 1400px) {
-  body .main-grid.main-grid-centered { grid-template-columns: minmax(400px, 640px) minmax(1100px, 1fr); }
-}
-/* Centrer la grande carte et limiter la largeur interne pour le confort visuel */
-body .main-grid.main-grid-centered #output-card { justify-self: center; width: 100%; max-width: 1400px; }
-body #output-card .tab-content.centered-content,
-body #output-card .tab-pane { max-width: var(--content-max); width: 100%; margin-inline: auto; }
+/* Removed another duplicate main-grid rule */
 
 /* ===== Chat legibility fixes ===== */
 /* Wrap long words/links inside bubbles */
@@ -843,17 +835,14 @@ body #output-card .tab-pane { max-width: var(--content-max); width: 100%; margin
 .nour-fab::before, .nour-fab::after, .nour-chat-header::before, .nour-chat-header::after { content: none !important; }
 /* Reset list-styles inside chat widget */
 .nour-chat, .nour-chat * { list-style: none; }
-.main-grid.main-grid-centered {
-  grid-template-columns: minmax(300px, 420px) minmax(760px, 1fr);
-  align-items: start;
-}
+/* Removed duplicate main-grid rule - now handled above */
 #input-card { position: sticky; top: 92px; align-self: start; max-width: 420px; }
 .centered-content { width: 100%; max-width: var(--content-max); margin-inline: auto; }
 
 /* Header & brand (si pas déjà présent) */
 .header-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .brand { display:flex; align-items:center; gap:12px; }
-.brand-avatar { width:48px; height:48px; border-radius:50%; object-fit:cover; box-shadow:0 6px 16px rgba(20,30,58,.18); }
+.brand-avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; box-shadow:0 6px 16px rgba(20,30,58,.18); }
 .brand-title { margin:0; font-size:1.35rem; }
 .brand-sub { margin:0; color: var(--secondary-color); font-size:.9rem; }
 
@@ -871,7 +860,7 @@ body #output-card .tab-pane { max-width: var(--content-max); width: 100%; margin
 
 /* Nudge bubble bottom-right */
 .nour-nudge { position: fixed; right: 18px; bottom: 88px; z-index: 1100; display: flex; align-items: center; gap: 10px; }
-.nour-nudge .nudge-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+.nour-nudge .nudge-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
 .nour-nudge .nudge-bubble { background: rgba(255,255,255,.95); color: #0b1020; border: 1px solid var(--border-color); border-radius: 14px; padding: 8px 12px; box-shadow: var(--shadow-lg); }
 .theme-dark .nour-nudge .nudge-bubble { background: rgba(15,23,42,.92); color: #e5e7eb; border-color: #334155; }
 .nour-nudge .nudge-close { margin-left: 6px; background: transparent; border: none; color: inherit; cursor: pointer; opacity: .8; }
@@ -893,7 +882,7 @@ body #output-card .tab-pane { max-width: var(--content-max); width: 100%; margin
   border-radius: 16px 16px 0 0;
 }
 .nour-chat-id { display: flex; align-items: center; gap: 10px; }
-.nour-chat-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+.nour-chat-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
 .nour-chat-actions .btn { padding: .35rem .6rem; }
 
 .nour-chat .chat-messages { padding: 12px; gap: 10px; }
@@ -909,17 +898,55 @@ body #output-card .tab-pane { max-width: var(--content-max); width: 100%; margin
   .nour-chat { bottom: 70px; }
 }
 
-/* ===== Centrage et élargissement de la zone centrale (override) ===== */
-/* Élargir le conteneur global et le centrer davantage */
-.container { width: min(94%, 1500px); margin-inline: auto; }
-/* Grille: colonne gauche un peu plus large, colonne droite plus large et fluide */
-.main-grid.main-grid-centered { grid-template-columns: minmax(340px, 520px) minmax(900px, 1fr); }
-@media (min-width: 1200px) {
-  .main-grid.main-grid-centered { grid-template-columns: minmax(380px, 580px) minmax(980px, 1fr); }
+/* ===== MAIN LAYOUT: Centered and wide interface ===== */
+.container { 
+  max-width: 1800px; 
+  width: min(98%, 1800px); 
+  margin-inline: auto; 
+  padding-inline: 12px; 
 }
-/* Contenu des onglets: largeur max + centrage */
+
+/* Main grid: truly centered with generous width */
+.main-grid.main-grid-centered {
+  display: grid;
+  grid-template-columns: minmax(380px, 600px) minmax(1100px, 1fr);
+  gap: 2rem;
+  justify-content: center;
+  align-items: start;
+  margin-inline: auto;
+  max-width: 1700px;
+}
+
+@media (min-width: 1400px) {
+  .main-grid.main-grid-centered { 
+    grid-template-columns: minmax(420px, 640px) minmax(1200px, 1fr); 
+  }
+}
+
+@media (max-width: 1100px) { 
+  .main-grid.main-grid-centered { 
+    grid-template-columns: 1fr; 
+    gap: 1rem;
+  } 
+}
+
+/* Center the output card and content */
+#output-card { 
+  justify-self: center; 
+  width: 100%; 
+  max-width: 1500px; 
+}
+
+/* Center tabs and make them take full width */
+#output-card .tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  gap: 0.5rem;
+}
+
 .centered-content { max-width: var(--content-max); width: 100%; margin-inline: auto; }
-/* Enforce centering even if tab-content changes layout */
 #output-card .tab-pane { max-width: var(--content-max); margin-inline: auto; }
 
 /* === Respect du reduce-motion === */
@@ -943,8 +970,7 @@ body #output-card .tab-pane { max-width: var(--content-max); width: 100%; margin
 .theme-3d body #input-card { justify-self: start; }
 
 .assistant-message.prof-nour::before { background: #253b80 url('assets/nour-badge.png') center/cover no-repeat; }
-.container { max-width: 1600px; }
-.main-grid.main-grid-centered { grid-template-columns: minmax(300px, 420px) minmax(760px, 1fr); align-items: start; }
+/* Container and grid rules consolidated above */
 #input-card { position: sticky; top: 92px; align-self: start; max-width: 420px; }
 #output-card.wide-output { padding-top: 0; }
 .centered-content { width: 100%; max-width: var(--content-max); margin-inline: auto; }
