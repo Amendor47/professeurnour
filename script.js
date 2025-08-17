@@ -4394,4 +4394,134 @@ document.addEventListener('DOMContentLoaded', () => {
    
    // Expose optimized LLM globally
    window.nourLLM = window.optimizedLLM;
+
+   // === Fix Missing Event Listeners ===
+   // Use a short delay to ensure DOM is fully loaded and other scripts have run
+   setTimeout(function() {
+      // Fix Socratic Chat (missing event listeners)
+      const socraticSend = document.getElementById('socratic-send');
+      const socraticInput = document.getElementById('socratic-input');
+      if (socraticSend && socraticInput && !socraticSend.dataset.nourFixed) {
+         socraticSend.addEventListener('click', function() {
+            const input = document.getElementById('socratic-input');
+            const raw = input.value.trim();
+            if (!raw) return;
+            
+            // Basic socratic chat functionality - just echo for now
+            const messages = document.getElementById('socratic-messages');
+            if (messages) {
+               const userMsg = document.createElement('div');
+               userMsg.className = 'chat-message user-message';
+               userMsg.textContent = raw;
+               messages.appendChild(userMsg);
+               
+               const assistantMsg = document.createElement('div');
+               assistantMsg.className = 'chat-message assistant-message';
+               assistantMsg.textContent = `Intéressant ! Pouvez-vous développer sur "${raw}" ? Qu'est-ce qui vous semble le plus important à retenir ?`;
+               messages.appendChild(assistantMsg);
+               
+               messages.scrollTop = messages.scrollHeight;
+               input.value = '';
+            }
+         });
+         
+         socraticInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+               e.preventDefault();
+               document.getElementById('socratic-send').click();
+            }
+         });
+         
+         socraticSend.dataset.nourFixed = 'true';
+      }
+
+      // Fix Settings Panel
+      const openSettings = document.getElementById('openSettings');
+      const closeSettings = document.getElementById('closeSettings');
+      const settingsPane = document.getElementById('settings-pane');
+      
+      if (openSettings && settingsPane && !openSettings.dataset.nourFixed) {
+         openSettings.addEventListener('click', function() {
+            settingsPane.classList.remove('hidden');
+         });
+         openSettings.dataset.nourFixed = 'true';
+      }
+      
+      if (closeSettings && settingsPane && !closeSettings.dataset.nourFixed) {
+         closeSettings.addEventListener('click', function() {
+            settingsPane.classList.add('hidden');
+         });
+         closeSettings.dataset.nourFixed = 'true';
+      }
+
+      // Fix Wide Toggle Button
+      const toggleWide = document.getElementById('toggleWide');
+      if (toggleWide && !toggleWide.dataset.nourFixed) {
+         toggleWide.addEventListener('click', function() {
+            const isWide = document.body.classList.contains('layout-wide');
+            document.body.classList.toggle('layout-wide', !isWide);
+            toggleWide.textContent = isWide ? '↔️ Étendre' : '↔️ Réduire';
+            try {
+               localStorage.setItem('layout_wide', !isWide ? '1' : '0');
+            } catch(_) {}
+         });
+         
+         // Set initial state
+         try {
+            const saved = localStorage.getItem('layout_wide');
+            if (saved !== '0') {
+               document.body.classList.add('layout-wide');
+               toggleWide.textContent = '↔️ Réduire';
+            }
+         } catch(_) {}
+         
+         toggleWide.dataset.nourFixed = 'true';
+      }
+
+      // Fix Load Samples Button (if not already wired)
+      const loadSamplesBtn = document.getElementById('loadSamplesBtn');
+      if (loadSamplesBtn && !loadSamplesBtn.dataset.nourFixed) {
+         loadSamplesBtn.addEventListener('click', function() {
+            // Basic sample loading functionality
+            const textInput = document.getElementById('textInput');
+            if (textInput) {
+               textInput.value = `# Exemple de Cours
+## Introduction
+Ce cours couvre les bases de la physique quantique.
+
+## Chapitre 1: Les principes fondamentaux
+Les particules subatomiques se comportent différemment...
+
+## Exercices
+1. Expliquer le principe d'incertitude
+2. Calculer la longueur d'onde de De Broglie`;
+               
+               // Trigger analysis if button exists
+               const processBtn = document.getElementById('processBtn');
+               if (processBtn) {
+                  processBtn.click();
+               }
+            }
+         });
+         loadSamplesBtn.dataset.nourFixed = 'true';
+      }
+
+      // Fix Guided Tour Buttons (Export, Optimize, Generate Planning, etc.)
+      const guidedTourButtons = [
+         { id: 'gr-export', action: () => alert('Export functionality - À implémenter') },
+         { id: 'gr-optimize', action: () => alert('Optimize functionality - À implémenter') },
+         { id: 'gr-make-plan', action: () => alert('Generate planning functionality - À implémenter') },
+         { id: 'gr-mark-easy', action: (btn) => { btn.style.background = '#22c55e'; alert('Marqué comme Facile'); } },
+         { id: 'gr-mark-ok', action: (btn) => { btn.style.background = '#eab308'; alert('Marqué comme Moyen'); } },
+         { id: 'gr-mark-hard', action: (btn) => { btn.style.background = '#ef4444'; alert('Marqué comme Difficile'); } }
+      ];
+      
+      guidedTourButtons.forEach(({ id, action }) => {
+         const btn = document.getElementById(id);
+         if (btn && !btn.dataset.nourFixed) {
+            btn.addEventListener('click', () => action(btn));
+            btn.dataset.nourFixed = 'true';
+         }
+      });
+   }, 100); // Small delay to ensure everything is loaded
 })();
