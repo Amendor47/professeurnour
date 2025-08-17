@@ -556,23 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.readAsText(file);
    });
 
-   dom.dropzone.addEventListener('click', () => dom.fileInput.click());
-   dom.dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dom.dropzone.classList.add('dragover');
-   });
-   dom.dropzone.addEventListener('dragleave', () => dom.dropzone.classList.remove('dragover'));
-   dom.dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dom.dropzone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file) {
-         const reader = new FileReader();
-         reader.onload = (event) => handleCourseInput(event.target.result);
-         reader.onerror = () => showToast("Erreur de lecture du fichier.", 'error');
-         reader.readAsText(file);
-      }
-   });
+   // Drag & drop functionality removed - handled later in the file with better implementation
 
    // --- Event Listeners ---
    dom.processBtn.addEventListener('click', processText);
@@ -1577,19 +1561,50 @@ document.addEventListener('DOMContentLoaded', () => {
       // Bind sample loader
       if(dom.loadSamplesBtn){ dom.loadSamplesBtn.addEventListener('click', loadSamplesAndRender); }
 
-   // File Handling
-   dom.dropzone.addEventListener('click', () => dom.fileInput.click());
-   dom.fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
-   dom.dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dom.dropzone.classList.add('dragover');
+   // File Handling - Add safety checks and DOM ready wrapper
+   document.addEventListener('DOMContentLoaded', function() {
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('fileInput');
+      
+      if (dropzone && fileInput) {
+         dropzone.addEventListener('click', () => fileInput.click());
+         dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+         });
+         dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+         dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+         });
+         
+         fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+      }
    });
-   dom.dropzone.addEventListener('dragleave', () => dom.dropzone.classList.remove('dragover'));
-   dom.dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dom.dropzone.classList.remove('dragover');
-      handleFile(e.dataTransfer.files[0]);
-   });
+   
+   // Fallback for cases where DOMContentLoaded already fired
+   setTimeout(() => {
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('fileInput');
+      
+      if (dropzone && fileInput && !dropzone.hasAttribute('data-listeners-attached')) {
+         dropzone.setAttribute('data-listeners-attached', 'true');
+         dropzone.addEventListener('click', () => fileInput.click());
+         dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+         });
+         dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+         dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+         });
+         
+         fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+      }
+   }, 100);
 
    // Also allow dragging files onto the Prof. NOUR logo in the header
    const logo = document.getElementById('logo-drop');
