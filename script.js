@@ -43,7 +43,7 @@
    };
 
    // ---- Helpers HTTP
-   async function fetchJSON(url, opts={}, timeout=15000){
+   async function fetchJSON(url, opts={}, timeout=8000){
       const ctl = new AbortController(); const id=setTimeout(()=>ctl.abort(), timeout);
       try{
          const res = await fetch(url, { ...opts, signal: ctl.signal });
@@ -85,7 +85,7 @@
             ];
             for (const url of urls){
                try{
-                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 20000);
+                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 12000);
                   const reply = j.reply || j.output || j.answer || j.text || '';
                   if (reply) return reply;
                }catch(_){ /* try next url */ }
@@ -873,7 +873,7 @@ document.addEventListener('DOMContentLoaded', () => {
    };
 
    // ---- Helpers HTTP
-   async function fetchJSON(url, opts={}, timeout=15000){
+   async function fetchJSON(url, opts={}, timeout=8000){
       const ctl = new AbortController(); const id=setTimeout(()=>ctl.abort(), timeout);
       try{
          const res = await fetch(url, { ...opts, signal: ctl.signal });
@@ -915,7 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
             for (const url of urls){
                try{
-                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 20000);
+                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 12000);
                   const reply = j.reply || j.output || j.answer || j.text || '';
                   if (reply) return reply;
                }catch(_){ /* try next url */ }
@@ -1341,7 +1341,7 @@ document.addEventListener('DOMContentLoaded', () => {
    };
 
    // ---- Helpers HTTP
-   async function fetchJSON(url, opts={}, timeout=15000){
+   async function fetchJSON(url, opts={}, timeout=8000){
       const ctl = new AbortController(); const id=setTimeout(()=>ctl.abort(), timeout);
       try{
          const res = await fetch(url, { ...opts, signal: ctl.signal });
@@ -1383,7 +1383,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
             for (const url of urls){
                try{
-                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 20000);
+                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 12000);
                   const reply = j.reply || j.output || j.answer || j.text || '';
                   if (reply) return reply;
                }catch(_){ /* try next url */ }
@@ -1628,18 +1628,9 @@ document.addEventListener('DOMContentLoaded', () => {
          const txt = e.dataTransfer?.getData('text/plain');
          if (txt && txt.trim()){
             dom.textInput.value = txt.trim();
-            // Apply current schedule params immediately
-            const dur = document.getElementById('gr-duration');
-            const brk = document.getElementById('gr-break');
-            const per = document.getElementById('gr-sessions-per-day');
-            const st = document.getElementById('gr-start-time');
-            const et = document.getElementById('gr-end-time');
-            const d  = document.getElementById('gr-days');
-            // Trigger parcours generation using existing button logic
-            document.getElementById('gr-generate')?.click();
-            // Re-apply schedule controls (values are already set in inputs)
-            document.getElementById('gr-make-plan')?.click();
-            showToast('Parcours mis à jour avec le texte déposé.');
+            // Store course content but don't auto-generate parcours
+            // User must manually click "Générer le parcours" to create guided tour
+            showToast('Cours chargé. Cliquez sur "Générer le parcours" pour commencer.', 'success');
          }
       });
    })();
@@ -2148,7 +2139,7 @@ document.addEventListener('DOMContentLoaded', () => {
    }
 
    // --- Unified HTTP + Provider Adapter (Chat Assistant pattern) ---
-   async function callHTTPJSON(url, body, { timeoutMs = 20000, headers = {} } = {}) {
+   async function callHTTPJSON(url, body, { timeoutMs = 12000, headers = {} } = {}) {
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), timeoutMs);
       try {
@@ -3606,7 +3597,7 @@ document.addEventListener('DOMContentLoaded', () => {
    };
 
    // --- Helpers HTTP
-   async function fetchJSON(url, opts={}, timeout=15000){
+   async function fetchJSON(url, opts={}, timeout=8000){
       const ctl = new AbortController(); const id=setTimeout(()=>ctl.abort(), timeout);
       try{
          const res = await fetch(url, { ...opts, signal: ctl.signal });
@@ -3648,7 +3639,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
             for (const url of urls){
                try{
-                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 20000);
+                  const j = await fetchJSON(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 12000);
                   const reply = j.reply || j.output || j.answer || j.text || '';
                   if (reply) return reply;
                }catch(_){ /* try next url */ }
