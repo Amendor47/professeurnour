@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "required": ["status", "sheets"],
+  "properties": {
+    "status": { "enum":["ok","insufficient_context"] },
+    "sheets": {
+      "type": "array",
+      "items": {
+        "type":"object",
+        "required":["title","short_version","medium_version","long_version","citations"],
+        "properties":{
+          "title":{"type":"string","minLength":1},
+          "short_version":{
+            "type":"object",
+            "required":["type","content"],
+            "properties":{
+              "type":{"const":"bullet_points"},
+              "content":{"type":"array","minItems":1,"maxItems":5,"items":{"type":"string"}}
+            }
+          },
+          "medium_version":{
+            "type":"object",
+            "required":["type","content"],
+            "properties":{
+              "type":{"const":"paragraphs"},
+              "content":{"type":"array","minItems":1,"maxItems":2,"items":{"type":"string"}}
+            }
+          },
+          "long_version":{
+            "type":"object",
+            "required":["type","content"],
+            "properties":{
+              "type":{"const":"developed"},
+              "content":{"type":"string","minLength":100}
+            }
+          },
+          "citations":{"type":"array","items":{"type":"string"}}
+        }
+      }
+    }
+  }
+}

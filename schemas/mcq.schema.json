@@ -1,0 +1,22 @@
+{
+  "type":"object",
+  "required":["status","items"],
+  "properties":{
+    "status":{"enum":["ok","insufficient_context"]},
+    "items":{"type":"array","items":{
+      "type":"object",
+      "required":["id","difficulty","bloom","question","options","answer_index","rationale","citations"],
+      "properties":{
+        "id":{"type":"string"},
+        "difficulty":{"enum":["easy","medium","hard"]},
+        "bloom":{"enum":["rappel","compréhension","application","analyse"]},
+        "question":{"type":"string"},
+  "options":{"type":"array","minItems":4,"maxItems":4,"uniqueItems":true,"items":{"type":"string"}},
+        "answer_index":{"type":"integer","minimum":0,"maximum":3},
+        "rationale":{"type":"string"},
+        "distractors_rationale":{"type":"string"},
+        "citations":{"type":"array","items":{"type":"string"}}
+      }
+    }}
+  }
+}

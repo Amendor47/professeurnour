@@ -1,0 +1,6 @@
+fastapi>=0.110
+uvicorn[standard]>=0.23
+jsonschema>=4.22
+httpx>=0.27
+pytest>=8.2
+ctransformers>=0.2.27
