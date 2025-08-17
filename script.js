@@ -1455,10 +1455,34 @@ document.addEventListener('DOMContentLoaded', () => {
          if (context) messages.push({role:'system', content:`Passages: ${context}`});
          messages.push({role:'user', content: question || prompt});
       } else if (task === 'sheets-3views') {
-         `<div class="chat-message ${msg.role}-message">${msg.content}</div>`
-      ).join('');
-      dom.socraticMessages.scrollTop = dom.socraticMessages.scrollHeight;
-      renderSocraticSuggestions();
+         const txt = sections.map(s=>`# ${s.title}\n${(s.body||'').slice(0,1200)}`).join('\n\n');
+         messages = [
+            {role:'system', content:'Tu produis 3 vues par section: courte (≤5 bullets), moyenne (1–2 paragraphes avec définitions), longue (≥2 paragraphes structurés). Réponds clair, français.'},
+            {role:'user', content: txt }
+         ];
+      } else if (task === 'make-mcq') {
+         const ctx = (passages?.map(p=>p.text).join('\n') || ($('#textInput')?.value||'')).slice(0,3500);
+         messages = [
+            {role:'system', content:'Génère des QCM FR : 1 seule bonne réponse, 3 distracteurs plausibles, justification brève. Retourne une liste.'},
+            {role:'user', content:`Contexte:\n${ctx}\n\nSujets:${(topics||[]).join(', ')}\nNombre:${count}`}
+         ];
+      } else {
+         messages = [{role:'user', content: prompt || question }];
+      }
+
+      try {
+         // Bonus sécurité: n'autorise pas d'appel OpenAI si non explicitement sélectionné
+         if ((providerKey !== 'openai') && provider.name === 'OpenAI') {
+            throw new Error('Provider non autorisé (OpenAI non sélectionné).');
+         }
+         const answer = await provider.chat({ messages, model: store.model, context });
+         return { answer };
+      } catch (e) {
+         console.warn('Provider error:', e);
+         const msg = e && e.message ? e.message : String(e || 'Erreur inconnue');
+         try{ alert(`Erreur IA (${provider.name}) : ${msg}`); }catch(_){ /* no alert in non-UI env */ }
+         return { answer: `Professeur Nour : incident côté ${provider.name}. ${msg}` };
+      }
    }
 
    // Build smart suggestion chips for Socratic and internal chats
@@ -3510,13 +3534,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
    el.start?.addEventListener('click', ()=>{
       if (!state.sections.length){ toast('Génère d’abord le parcours.'); return; }
-      // Modal
-      sessionModal: document.getElementById('sessionModal'),
-      closeModalBtn: document.querySelector('.close-button'),
-      saveSessionBtn: document.getElementById('saveSessionBtn'),
-      sessionNameInput: document.getElementById('sessionName'),
-      sessionList: document.getElementById('sessionList'),
-   };
+      state.current = 0;
+      state.running = true;
+      renderCurrent();
+   });
 
    // --- Minimal Toast (non-bloquant) ---
    const toastHost = document.createElement('div');

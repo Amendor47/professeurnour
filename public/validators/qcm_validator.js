@@ -1,4 +1,4 @@
-export function validateMcqPayload(payload){
+function validateMcqPayload(payload){
   const errors = [];
   if (payload?.status !== 'ok') errors.push('status != ok');
   const items = payload?.items || [];
